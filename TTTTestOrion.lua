@@ -35,7 +35,7 @@ Tab:AddToggle({
     Name = "Bring Mob"
     Default = true,
     Callback = function(value)
-    _G.BringExtra = value
+    _G.BringNormal = value
     end
 })
 
@@ -192,24 +192,25 @@ function GetBladeHit()
 	end)
 ----//Bring Mob
 spawn(function()
- game:GetService("RunService").Heartbeat:Connect(function() CheckQuest()
-  pcall(function()
-   if _G.BringExtra then
-   for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-   if _G.Auto_Farm_Level and StartMagnet and v.Name ~= "Ice Admiral [Lv. 700] [Boss]" and v.Name ~= "Don Swan [Lv. 3000] [Boss]" and v.Name ~= "Saber Expert [Lv. 200] [Boss]" and v.Name ~= "Longma [Lv. 2000] [Boss]" and (v.HumanoidRootPart.Position - PosMon.Position).magnitude <= 350 then
-   v.HumanoidRootPart.CFrame = PosMon
-   v.HumanoidRootPart.CanCollide = false
-   v.HumanoidRootPart.Size = Vector3.new(60,60,60)
-   if v.Humanoid:FindFirstChild("Animator") then
-   v.Humanoid.Animator:Destroy()
-   end
-   sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
-   end
-   end
-   end
-   end)
-   end)
-end)
+    game:GetService("RunService").Heartbeat:Connect(function() CheckQuest()
+		pcall(function()
+			if _G.BringNormal then
+				for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+					if _G.Auto_Farm_Level and StartMagnet and v.Name == Ms and (v.HumanoidRootPart.Position - PosMon.Position).magnitude <= 250 then
+						v.HumanoidRootPart.CFrame = PosMon
+						v.HumanoidRootPart.CanCollide = false
+						v.HumanoidRootPart.Size = Vector3.new(60,60,60)
+						if v.Humanoid:FindFirstChild("Animator") then
+							v.Humanoid.Animator:Destroy()
+						end
+						sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  math.huge)
+					end
+				end
+			end
+		end)
+    end)
+	end)
+
 
 ---//Soucre Auto Click
 spawn(function()
