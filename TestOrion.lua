@@ -21,43 +21,15 @@ Tab:AddDropdown({
 	end    
 })
 
-
 Tab:AddToggle({
 	Name = "Fast Attack",
-	Default = false,
+	Default = true,
 	Callback = function(value)
     Fast_Attack = value
 	end    
 })
 
 -----//Soucre Fast Attack
-coroutine.wrap(function()
-	while task.wait(.1) do
-		local ac = CombatFrameworkR.activeController
-		if ac and ac.equipped then
-			if FastAttack and Fast_Attack and _G.Setting_table.FastMode == "Normal" then
-				AttackFunction()
-				if _G.Setting_table.FastModeD == "Normal" then
-					if tick() - cooldownfastattack > 1 then wait(1) cooldownfastattack = tick() end
-				elseif _G.Setting_table.FastModeD == "Fast" then
-					if tick() - cooldownfastattack > 2.5 then wait(1) cooldownfastattack = tick() end
-				elseif _G.Setting_table.FastModeD == "Extra" then
-					if tick() - cooldownfastattack > 3.5 then wait() cooldownfastattack = tick() end
-				end
-			elseif FastAttack and Fast_Attack and _G.Setting_table.FastMode == "ExTra" then
-				AttackNoCD()
-				if _G.Setting_table.FastModeD == "Normal" then
-					if tick() - cooldownfastattack > 1 then wait(1) cooldownfastattack = tick() end
-				elseif _G.Setting_table.FastModeD == "Fast" then
-					if tick() - cooldownfastattack > 2.5 then wait(1) cooldownfastattack = tick() end
-				elseif _G.Setting_table.FastModeD == "Extra" then
-					if tick() - cooldownfastattack > 3.5 then wait() cooldownfastattack = tick() end
-				end
-			end
-		end
-	end
-end)()
-
 coroutine.wrap(function()
 	while task.wait(.1) do
 		if DbFast and _G.Setting_table.DbFast then
@@ -100,3 +72,31 @@ task.spawn(function()
 		end)
 	end
 end)
+
+coroutine.wrap(function()
+	while task.wait(.1) do
+		local ac = CombatFrameworkR.activeController
+		if ac and ac.equipped then
+			if FastAttack and Fast_Attack and _G.Setting_table.FastMode == "Normal" then
+				AttackFunction()
+				if _G.Setting_table.FastModeD == "Normal" then
+					if tick() - cooldownfastattack > 1 then wait(1) cooldownfastattack = tick() end
+				elseif _G.Setting_table.FastModeD == "Fast" then
+					if tick() - cooldownfastattack > 2.5 then wait(1) cooldownfastattack = tick() end
+				elseif _G.Setting_table.FastModeD == "Extra" then
+					if tick() - cooldownfastattack > 3.5 then wait() cooldownfastattack = tick() end
+				end
+			elseif FastAttack and Fast_Attack and _G.Setting_table.FastMode == "ExTra" then
+				AttackNoCD()
+				if _G.Setting_table.FastModeD == "Normal" then
+					if tick() - cooldownfastattack > 1 then wait(1) cooldownfastattack = tick() end
+				elseif _G.Setting_table.FastModeD == "Fast" then
+					if tick() - cooldownfastattack > 2.5 then wait(1) cooldownfastattack = tick() end
+				elseif _G.Setting_table.FastModeD == "Extra" then
+					if tick() - cooldownfastattack > 3.5 then wait() cooldownfastattack = tick() end
+				end
+			end
+		end
+	end
+end)()
+
