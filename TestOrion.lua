@@ -58,20 +58,6 @@ coroutine.wrap(function()
 	end
 end)()
 
-task.spawn(function()
-	while task.wait() do
-		pcall(function()
-			if _G.Setting_table.FastModeD == "Normal" then
-				Faa:Set("ATTACK | 1 Wait | 1")
-			elseif _G.Setting_table.FastModeD == "Fast" then
-				Faa:Set("ATTACK | 2.5 Wait | 1")
-			elseif _G.Setting_table.FastModeD == "Extra" then
-				Faa:Set("ATTACK | INF Wait | 0")
-			end
-		end)
-	end
-end)
-
 coroutine.wrap(function()
 	while task.wait(.1) do
 		local ac = CombatFrameworkR.activeController
