@@ -1,3 +1,41 @@
+---//hitBox
+function Attack1Function()
+	local ac = CombatFrameworkR.activeController
+	if ac and ac.equipped then
+		for indexincrement = 1, 1 do
+			local bladehit = getAllBladeHits(1)
+			if #bladehit > 0 then
+				local AcAttack8 = debug.getupvalue(ac.attack, 5)
+				local AcAttack9 = debug.getupvalue(ac.attack, 6)
+				local AcAttack7 = debug.getupvalue(ac.attack, 4)
+				local AcAttack10 = debug.getupvalue(ac.attack, 7)
+				local NumberAc12 = (AcAttack8 * 798405 + AcAttack7 * 727595) % AcAttack9
+				local NumberAc13 = AcAttack7 * 798405
+				(function()
+					NumberAc12 = (NumberAc12 * AcAttack9 + NumberAc13) % 1099511627776
+					AcAttack8 = math.floor(NumberAc12 / AcAttack9)
+					AcAttack7 = NumberAc12 - AcAttack8 * AcAttack9
+				end)()
+				AcAttack10 = AcAttack10 + 1
+				debug.setupvalue(ac.attack, 5, AcAttack8)
+				debug.setupvalue(ac.attack, 6, AcAttack9)
+				debug.setupvalue(ac.attack, 4, AcAttack7)
+				debug.setupvalue(ac.attack, 7, AcAttack10)
+				for k, v in pairs(ac.animator.anims.basic) do
+					v:Play(0.01,0.01,0.01)
+				end                 
+				if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") and ac.blades and ac.blades[1] then 
+					game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(CurrentWeapon()))
+					game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(NumberAc12 / 1099511627776 * 16777215), AcAttack10)
+					game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit,  indexincrement, "") 
+				end
+			end
+		end
+	end
+end
+
+
+
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
 local Window = OrionLib:MakeWindow({Name = "ConCac", HidePremium = false, SaveConfig = true, ConfigFolder = "AnDepZai Loader", IntroText = "AnDepZai"})
@@ -12,64 +50,59 @@ local Tab = Window:MakeTab({
 local Section = Tab:AddSection({
 	Name = "Select Mode Farm"
 })
+Tab:AddDropdown({
+	Name = "Select Delay Fast",
+	Default = "Normal",
+	Options = {"Slow", "Super"},
+	Callback = function(Value)
+		print(Value)
+	end    
+})
+spawn(function()
+	    while wait(.1) do
+	        if _G.FastAttackDelay then
+	            pcall(function()
+	                if _G.FastAttackDelay == "Slow" then
+	                    _G.FastAttackDelay = 0.2
+	                elseif _G.FastAttackDelay == "Default" then
+	                    _G.FastAttackDelay = 0.5
+	                elseif _G.FastAttackDelay == "Normal" then
+	                    _G.FastAttackDelay = 0.2
+	                elseif _G.FastAttackDelay == "Super" then
+	                    _G.FastAttackDelay = 0
+	                end
+	            end)
+	        end
+	    end
+	end)
+	
+	
+	spawn(function()
+	while true do
+	if _G.FastAttack then
+	pcall(function()
+	CameraShakerR:Stop()
+	CombatFramework.activeController.attacking = false
+	CombatFramework.activeController.timeToNextAttack = 0
+	CombatFramework.activeController.increment = 3
+	CombatFramework.activeController.hitboxMagnitude = 100
+	CombatFramework.activeController.blocking = false
+	CombatFramework.activeController.timeToNextBlock = 0
+	CombatFramework.activeController.focusStart = 0
+	CombatFramework.activeController.humanoid.AutoRotate = true
+	end)
+	end
+	task.wait()
+	end
+	end)
 
 Tab:AddToggle({
 	Name = "Fast Attack",
 	Default = true,
 	Callback = function(Value)
-	_G.Extra_Fast_Attack = Value
+	_G.FastAttack = Value
 	end    
 })
-spawn(function()
-        while task.wait() do
-            if _G.Extra_Fast_Attack then
-                pcall(function()
-                    wait(0.2)
-                    local AC = CbFw2.activeController
-                    for i = 1,1 do 
-                        local bladehit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(
-                            plr.Character,
-                            {plr.Character.HumanoidRootPart},
-                            60
-                        )
-                        local cac = {}
-                        local hash = {}
-                        for k, v in pairs(bladehit) do
-                            if v.Parent:FindFirstChild("HumanoidRootPart") and not hash[v.Parent] then
-                                table.insert(cac, v.Parent.HumanoidRootPart)
-                                hash[v.Parent] = true
-                            end
-                        end
-                        bladehit = cac
-                        if #bladehit > 0 then
-                            local u8 = debug.getupvalue(AC.attack, 5)
-                            local u9 = debug.getupvalue(AC.attack, 6)
-                            local u7 = debug.getupvalue(AC.attack, 4)
-                            local u10 = debug.getupvalue(AC.attack, 7)
-                            local u12 = (u8 * 798405 + u7 * 727595) % u9
-                            local u13 = u7 * 798405
-                            (function()
-                                u12 = (u12 * u9 + u13) % 1099511627776
-                                u8 = math.floor(u12 / u9)
-                                u7 = u12 - u8 * u9
-                            end)()
-                            u10 = u10 + 1
-                            debug.setupvalue(AC.attack, 5, u8)
-                            debug.setupvalue(AC.attack, 6, u9)
-                            debug.setupvalue(AC.attack, 4, u7)
-                            debug.setupvalue(AC.attack, 7, u10)
-                            if plr.Character:FindFirstChildOfClass("Tool") and AC.blades and AC.blades[1] then 
-                                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(GetCurrentBlade()))
-                                game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(u12 / 1099511627776 * 16777215), u10)
-                                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, i, "") 
-                            end
-                        end
-                    end
-                end)
-            end
-        end
-    end)
-
 -----//Bring Mob Toggle
 Tab:AddToggle({
 	Name = "Bring Mob",
@@ -155,4 +188,20 @@ function InMyNetWork(object)
     end
 end
 
-
+Tab:AddToggle({
+	Name = "Auto Click (85% Kick)",
+	Default = true,
+	Callback = function(Value)
+	_G.click = Value
+	end    
+})
+spawn(function()
+    game:GetService("RunService").RenderStepped:Connect(function()
+        if _G.click then
+             pcall(function()
+                game:GetService'VirtualUser':CaptureController()
+			    game:GetService'VirtualUser':Button1Down(Vector2.new(0,1,0,1))
+            end)
+        end
+    end)
+end)
