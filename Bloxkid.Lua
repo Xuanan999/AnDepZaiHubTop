@@ -180,3 +180,88 @@ function AttackPlayers()
     end
 end
 
+Tab:AddToggle({
+	Name = "Bring Mob",
+	Default = true,
+	Callback = function(Value)
+	BringMob = Value
+	end    
+})
+----//Bring Mob
+task.spawn(function()
+	while true do task.wait()
+		if setscriptable then
+			setscriptable(game.Players.LocalPlayer, "SimulationRadius", true)
+		end
+		if sethiddenproperty then
+			sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+		end
+	end
+end)
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if BringMob then
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if not string.find(v.Name,"Boss") and (v.HumanoidRootPart.Position - PosMon.Position).magnitude <= 300 then
+                        if InMyNetWork(v.HumanoidRootPart) then
+                            v.HumanoidRootPart.CFrame = PosMon
+                            v.Humanoid.JumpPower = 0
+                            v.Humanoid.WalkSpeed = 0
+                            v.HumanoidRootPart.Size = Vector3.new(60,60,60)
+                            v.HumanoidRootPart.Transparency = 1
+                            v.HumanoidRootPart.CanCollide = false
+                            v.Head.CanCollide = false
+                            if v.Humanoid:FindFirstChild("Animator") then
+                                v.Humanoid.Animator:Destroy()
+                            end
+                            v.Humanoid:ChangeState(11)
+                            v.Humanoid:ChangeState(14)
+                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  math.huge)
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)	
+
+
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if BringMob then
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if not string.find(v.Name,"Boss") and (v.HumanoidRootPart.Position - PosMon.Position).magnitude <= 300 then
+                            v.HumanoidRootPart.CFrame = PosMon
+                            v.Humanoid.JumpPower = 0
+                            v.Humanoid.WalkSpeed = 0
+                            v.HumanoidRootPart.Size = Vector3.new(60,60,60)
+                            v.HumanoidRootPart.Transparency = 1
+                            v.HumanoidRootPart.CanCollide = false
+                            v.Head.CanCollide = false
+                            if v.Humanoid:FindFirstChild("Animator") then
+                                v.Humanoid.Animator:Destroy()
+                            end
+                            v.Humanoid:ChangeState(11)
+                            v.Humanoid:ChangeState(14)
+                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  math.huge)
+                    end
+                end
+            end
+        end)
+    end
+end)
+function InMyNetWork(object)
+    if isnetworkowner then
+        return isnetworkowner(object)
+    else
+        if (object.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 200 then 
+            return true
+        end
+        return false
+    end
+end
+
+
