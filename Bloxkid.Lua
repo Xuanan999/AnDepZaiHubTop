@@ -1,37 +1,26 @@
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
-local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
-local Window = Fluent:CreateWindow({
-    Title = "AnDepZai Hub | Blox-Fruit"
-    SubTitle = "By An",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(480, 400),
-    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
-    Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+local Window = OrionLib:MakeWindow({Name = "ConCac", HidePremium = false, SaveConfig = true, ConfigFolder = "AnDepZai Loader", IntroText = "AnDepZai"})
+
+local Tab = Window:MakeTab({
+	Name = "Main Farm",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
 })
 
-local Tabs = {
-    Main = Window:AddTab({ Title = "Main"}),
-}
-
-local Options = Fluent.Options
-
-do
 ------------//Tạo Tab
-local listfastattack = {"Fast", "Normal", "Slow"}
+local Section = Tab:AddSection({
+	Name = "Select Mode Farm"
+})
 
-    local DropdownDelayAttack = Tabs.Main:AddDropdown("DropdownDelayAttack", {
-        Title = "Select Fast Attack",
-        Description = "Select Fast Attack Farm",
-        Values = listfastattack,
-        Multi = false,
-        Default = 1,
-    })
-    DropdownDelayAttack:SetValue("Normal")
-    DropdownDelayAttack:OnChanged(function(value)
-    _G.FastType = value
+Tab:AddDropdown({
+	Name = "Select Fast Attack",
+	Default = "Normal",
+	Options = {"Fast", "Normal", "Slow"},
+	Callback = function(Value)
+	_G.FastType = Value
+	end    
+})
     coroutine.wrap(function()
 while task.wait(0) do
 local ac = CombatFrameworkR.activeController
@@ -81,12 +70,12 @@ task.spawn(function()
     end
 end)
 
-
-local ToggleFastAttack = Tabs.Main:AddToggle("ToggleFastAttack", {Title = "Fast Attack",Description = "Open or False", Default = true })
-ToggleMirage:OnChanged(function(Value)
- _G.FastAttack = Value
-end) 
-
- Options.ToggleFastAttack:SetValue(false)
+Tab:AddToggle({
+	Name = "Fast Attack",
+	Default = false,
+	Callback = function(Value)
+	_G.FastAttack = Value
+	end    
+})
 
 
