@@ -14,7 +14,6 @@ local Window = Fluent:CreateWindow({
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Main"}),
-    Settings = Window:AddTab({ Title = "Settings"}),
 }
 
 local Options = Fluent.Options
@@ -81,3 +80,13 @@ task.spawn(function()
         end)
     end
 end)
+
+
+local ToggleFastAttack = Tabs.Main:AddToggle("ToggleFastAttack", {Title = "Fast Attack",Description = "Open or False", Default = true })
+ToggleMirage:OnChanged(function(Value)
+ _G.FastAttack = Value
+end) 
+
+ Options.ToggleFastAttack:SetValue(false)
+
+
