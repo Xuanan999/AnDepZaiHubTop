@@ -53,9 +53,9 @@ local Section = Tab:AddSection({
 Tab:AddDropdown({
 	Name = "Select Delay Fast",
 	Default = "Normal",
-	Options = {"Slow", "Super"},
+	Options = {"Normal", "Slow", "Super"},
 	Callback = function(Value)
-		print(Value)
+    _G.FastAttackDelay = Value
 	end    
 })
 spawn(function()
@@ -108,7 +108,7 @@ Tab:AddToggle({
 	Name = "Bring Mob",
 	Default = true,
 	Callback = function(Value)
-	BringMob = Value
+   _G.BringMob = Value
 	end    
 })
 ----//Bring Mob
@@ -126,7 +126,7 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
-            if BringMob then
+            if _G.BringMob then
                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                     if not string.find(v.Name,"Boss") and (v.HumanoidRootPart.Position - PosMon.Position).magnitude <= 300 then
                         if InMyNetWork(v.HumanoidRootPart) then
@@ -155,7 +155,7 @@ end)
 task.spawn(function()
     while task.wait() do
         pcall(function()
-            if BringMob then
+            if _G.BringMob then
                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                     if not string.find(v.Name,"Boss") and (v.HumanoidRootPart.Position - PosMon.Position).magnitude <= 300 then
                             v.HumanoidRootPart.CFrame = PosMon
