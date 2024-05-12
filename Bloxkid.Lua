@@ -34,7 +34,66 @@ function Attack1Function()
 	end
 end
 
-------//Hitbox 2
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "ConCac", HidePremium = false, SaveConfig = true, ConfigFolder = "AnDepZai Loader", IntroText = "AnDepZai"})
+
+local Tab = Window:MakeTab({
+	Name = "Main Farm",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+------------//Tạo Tab
+local Section = Tab:AddSection({
+	Name = "Select Mode Farm"
+})
+Tab:AddDropdown({
+	Name = "Select Delay Fast",
+	Default = "Normal",
+	Options = {"Slow", "Normal", "Pro"},
+	Callback = function(Value)
+    _G.FastAttackDelay = Value
+	end    
+})
+spawn(function()
+	    while wait(.1) do
+	        if _G.FastAttackDelay then
+	            pcall(function()
+	                if _G.FastAttackDelay == "Slow" then
+	                    _G.FastAttackDelay = 0.2
+	                elseif _G.FastAttackDelay == "Default" then
+	                    _G.FastAttackDelay = 0.5
+	                elseif _G.FastAttackDelay == "Normal" then
+	                    _G.FastAttackDelay = 0.2
+	                elseif _G.FastAttackDelay == "Pro" then
+	                    _G.FastAttackDelay = 0
+	                end
+	            end)
+	        end
+	    end
+	end)
+	
+	
+	spawn(function()
+	while true do
+	if _G.FastAttack then
+	pcall(function()
+	CameraShakerR:Stop()
+	CombatFramework.activeController.attacking = false
+	CombatFramework.activeController.timeToNextAttack = 0
+	CombatFramework.activeController.increment = 3
+	CombatFramework.activeController.hitboxMagnitude = 100
+	CombatFramework.activeController.blocking = false
+	CombatFramework.activeController.timeToNextBlock = 0
+	CombatFramework.activeController.focusStart = 0
+	CombatFramework.activeController.humanoid.AutoRotate = true
+	end)
+	end
+	task.wait()
+	end
+	end)
+
 function GetBladeHit()
 	    local CombatFrameworkLib = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))
 	    local CmrFwLib = CombatFrameworkLib[2]
@@ -89,67 +148,7 @@ function GetBladeHit()
 	        end
 	    end
 	end)
-
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-
-local Window = OrionLib:MakeWindow({Name = "ConCac", HidePremium = false, SaveConfig = true, ConfigFolder = "AnDepZai Loader", IntroText = "AnDepZai"})
-
-local Tab = Window:MakeTab({
-	Name = "Main Farm",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-
-------------//Tạo Tab
-local Section = Tab:AddSection({
-	Name = "Select Mode Farm"
-})
-Tab:AddDropdown({
-	Name = "Select Delay Fast",
-	Default = "Normal",
-	Options = {"Normal", "Slow", "Super"},
-	Callback = function(Value)
-    _G.FastAttackDelay = Value
-	end    
-})
-spawn(function()
-	    while wait(.1) do
-	        if _G.FastAttackDelay then
-	            pcall(function()
-	                if _G.FastAttackDelay == "Slow" then
-	                    _G.FastAttackDelay = 0.2
-	                elseif _G.FastAttackDelay == "Default" then
-	                    _G.FastAttackDelay = 0.5
-	                elseif _G.FastAttackDelay == "Normal" then
-	                    _G.FastAttackDelay = 0.2
-	                elseif _G.FastAttackDelay == "Super" then
-	                    _G.FastAttackDelay = 0
-	                end
-	            end)
-	        end
-	    end
-	end)
 	
-	
-	spawn(function()
-	while true do
-	if _G.FastAttack then
-	pcall(function()
-	CameraShakerR:Stop()
-	CombatFramework.activeController.attacking = false
-	CombatFramework.activeController.timeToNextAttack = 0
-	CombatFramework.activeController.increment = 3
-	CombatFramework.activeController.hitboxMagnitude = 100
-	CombatFramework.activeController.blocking = false
-	CombatFramework.activeController.timeToNextBlock = 0
-	CombatFramework.activeController.focusStart = 0
-	CombatFramework.activeController.humanoid.AutoRotate = true
-	end)
-	end
-	task.wait()
-	end
-	end)
-
 Tab:AddToggle({
 	Name = "Fast Attack",
 	Default = true,
