@@ -13,173 +13,64 @@ local Section = Tab:AddSection({
 	Name = "Select Mode Farm"
 })
 
-Tab:AddDropdown({
-	Name = "Select Fast Attack",
-	Default = "Normal",
-	Options = {"Fast", "Normal", "Slow"},
-	Callback = function(Value)
-	_G.FastType = Value
-	end    
-})
-    coroutine.wrap(function()
-while task.wait(0) do
-local ac = CombatFrameworkR.activeController
-if ac and ac.equipped then
-    task.wait(0.04)
-    if FastAttack or _G.FastAttack then
-        yakmefan()
-        if _G.FastType == "Normal" then
-            if tick() - cooldownfastattack > .9 then wait(.1) cooldownfastattack = tick() end
-        elseif _G.FastType == "Fast" then
-            if tick() - cooldownfastattack > 1.5 then wait(.01) cooldownfastattack = tick() end
-        elseif _G.FastType == "Slow" then
-            if tick() - cooldownfastattack > .3 then wait(.7) cooldownfastattack = tick() end
-        end
-        setscriptable(game.Players.LocalPlayer, "SimulationRadius", true)
-        sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
-    end
-end
-end
-end)()
-_G.FastType = "Fast" 
-local Time = 0.04
-task.spawn(function()
-    while _G.FastAttack do task.wait()
-    require(game.ReplicatedStorage.Util.CameraShaker):Stop()
-    Bruh = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
-    Ryu = debug.getupvalues(Bruh)[2]
-    task.spawn(function()
-        while true do task.wait()
-            if _G.FastAttack then
-                if typeof(Ryu) == "table" then
-                    pcall(function()
-                        --Ryu.activeController.timeToNextAttack = -(math.huge^math.huge^math.huge)
-                        Ryu.activeController.timeToNextAttack = 0
-                        Ryu.activeController.active = false
-                        Ryu.activeController.timeToNextBlock = 0
-                        Ryu.activeController.focusStart = 0
-                        Ryu.activeController.increment = 4
-                        Ryu.activeController.blocking = false
-                        Ryu.activeController.attacking = false
-                        Ryu.activeController.humanoid.AutoRotate = false
-                        end)
-                    end
-                end
-            end
-        end)
-    end
-end)
-
 Tab:AddToggle({
 	Name = "Fast Attack",
 	Default = true,
 	Callback = function(Value)
-	_G.FastAttack = Value
+	_G.Extra_Fast_Attack = Value
 	end    
 })
-function CurrentWeapon()
-local ac = CombatFrameworkR.activeController
-local ret = ac.blades[1]
-if not ret then return game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Name end
-pcall(function()
-while ret.Parent ~= game.Players.LocalPlayer.Character do ret = ret.Parent end
-end)
-if not ret then return game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Name end
-return ret
-end
-
-function getAllBladeHits(Sizes)
-    local Hits = {}
-    local Client = game.Players.LocalPlayer
-    local Characters = workspace.Characters:GetChildren()
-    local Enemies = game:GetService("Workspace").Enemies:GetChildren()
-    for i = 1, #Enemies do
-    local v = Enemies[i]
-    local Human = v:FindFirstChildOfClass("Humanoid")
-    if Human and Human.RootPart and Human.Health > 0 and Client:DistanceFromCharacter(Human.RootPart.Position) <= Sizes + 5 then
-        table.insert(Hits, Human.RootPart)
-    end
-    end
-    for i = 1,#Characters do local v = Characters[i]
-        if v ~= game.Players.LocalPlayer.Character then
-            local Human = v:FindFirstChildOfClass("Humanoid")
-            if Human and Human.RootPart and Human.Health > 0 and Client:DistanceFromCharacter(Human.RootPart.Position) <= Sizes + 5 then
-                table.insert(Hits,Human.RootPart)
+spawn(function()
+        while task.wait() do
+            if _G.Extra_Fast_Attack then
+                pcall(function()
+                    wait(0.2)
+                    local AC = CbFw2.activeController
+                    for i = 1,1 do 
+                        local bladehit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(
+                            plr.Character,
+                            {plr.Character.HumanoidRootPart},
+                            60
+                        )
+                        local cac = {}
+                        local hash = {}
+                        for k, v in pairs(bladehit) do
+                            if v.Parent:FindFirstChild("HumanoidRootPart") and not hash[v.Parent] then
+                                table.insert(cac, v.Parent.HumanoidRootPart)
+                                hash[v.Parent] = true
+                            end
+                        end
+                        bladehit = cac
+                        if #bladehit > 0 then
+                            local u8 = debug.getupvalue(AC.attack, 5)
+                            local u9 = debug.getupvalue(AC.attack, 6)
+                            local u7 = debug.getupvalue(AC.attack, 4)
+                            local u10 = debug.getupvalue(AC.attack, 7)
+                            local u12 = (u8 * 798405 + u7 * 727595) % u9
+                            local u13 = u7 * 798405
+                            (function()
+                                u12 = (u12 * u9 + u13) % 1099511627776
+                                u8 = math.floor(u12 / u9)
+                                u7 = u12 - u8 * u9
+                            end)()
+                            u10 = u10 + 1
+                            debug.setupvalue(AC.attack, 5, u8)
+                            debug.setupvalue(AC.attack, 6, u9)
+                            debug.setupvalue(AC.attack, 4, u7)
+                            debug.setupvalue(AC.attack, 7, u10)
+                            if plr.Character:FindFirstChildOfClass("Tool") and AC.blades and AC.blades[1] then 
+                                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(GetCurrentBlade()))
+                                game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(u12 / 1099511627776 * 16777215), u10)
+                                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, i, "") 
+                            end
+                        end
+                    end
+                end)
             end
         end
-    end
-    return Hits
-end
-function yakmefan()
-local ac = CombatFrameworkR.activeController
-if ac and ac.equipped then
- for Ryuen = 1, 1 do
-    local bladehit = getAllBladeHits(60)
-    if #bladehit > 0 then
-        local AcAttack8 = debug.getupvalue(ac.attack, 5)
-        local AcAttack9 = debug.getupvalue(ac.attack, 6)
-        local AcAttack7 = debug.getupvalue(ac.attack, 4)
-        local AcAttack10 = debug.getupvalue(ac.attack, 7)
-        local NumberAc12 = (AcAttack8 * 798405 + AcAttack7 * 727595) % AcAttack9
-        local NumberAc13 = AcAttack7 * 798405
-        (function() 
-            NumberAc12 = (NumberAc12 * AcAttack9 + NumberAc13) % 1099511627776
-            AcAttack8 = math.floor(NumberAc12 / AcAttack9)
-            AcAttack7 = NumberAc12 - AcAttack8 * AcAttack9
-        end)()
-        AcAttack10 = AcAttack10 + 1
-        debug.setupvalue(ac.attack, 5, AcAttack8)
-        debug.setupvalue(ac.attack, 6, AcAttack9)
-        debug.setupvalue(ac.attack, 4, AcAttack7)
-        debug.setupvalue(ac.attack, 7, AcAttack10)
-        for k, v in pairs(ac.animator.anims.basic) do
-            v:Play(0.01,0.01,0.01)
-        end  
-        if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") and ac.blades and ac.blades[1] then
-            game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(CurrentWeapon()))
-            game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(NumberAc12 / 1099511627776 * 16777215), AcAttack10)
-            game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, 2, "") 
-        end
-    end
-end
-end
-end
+    end)
 
-function AttackPlayers()
-    local ac = CombatFrameworkR.activeController
-    if ac and ac.equipped then
-        for i = 1, 1 do
-            local bladehit = getAllBladeHitsPlayers(60)
-            if #bladehit > 0 then
-                local AcAttack8 = debug.getupvalue(ac.attack, 5)
-                local AcAttack9 = debug.getupvalue(ac.attack, 6)
-                local AcAttack7 = debug.getupvalue(ac.attack, 4)
-                local AcAttack10 = debug.getupvalue(ac.attack, 7)
-                local NumberAc12 = (AcAttack8 * 798405 + AcAttack7 * 727595) % AcAttack9
-                local NumberAc13 = AcAttack7 * 798405
-                (function()
-                    NumberAc12 = (NumberAc12 * AcAttack9 + NumberAc13) % 1099511627776
-                    AcAttack8 = math.floor(NumberAc12 / AcAttack9)
-                    AcAttack7 = NumberAc12 - AcAttack8 * AcAttack9
-                end)()
-                AcAttack10 = AcAttack10 + 1
-                debug.setupvalue(ac.attack, 5, AcAttack8)
-                debug.setupvalue(ac.attack, 6, AcAttack9)
-                debug.setupvalue(ac.attack, 4, AcAttack7)
-                debug.setupvalue(ac.attack, 7, AcAttack10)
-                for k, v in pairs(ac.animator.anims.basic) do
-                    v:Play(0.01,0.01,0.01)
-                end                 
-                if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") and ac.blades and ac.blades[1] then 
-                    game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(CurrentWeapon()))
-                    game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(NumberAc12 / 1099511627776 * 16777215), AcAttack10)
-                    game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, 2, "") 
-                end
-            end
-        end
-    end
-end
-
+-----//Bring Mob Toggle
 Tab:AddToggle({
 	Name = "Bring Mob",
 	Default = true,
